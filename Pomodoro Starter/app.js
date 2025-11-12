@@ -83,16 +83,20 @@
 
 // David's Version of Pomodoro Timer
 
+
+const timerMilliSeconds = document.querySelector('.timer__milliseconds')
+const timerSeconds = document.querySelector('.timer__seconds')
+const timerMinutes = document.querySelector('.timer__minutes')
+const startButton = document.querySelector('.stopwatch__start')
+const stopButton = document.querySelector('.stopwatch__stop')
+const resetButton = document.querySelector('.stopwatch__reset')
+
 let cancelId;
 let startTime;
 let savedTime = 0;
 const countdown = 5 * 1000
-const timerMilliSeconds = document.querySelector('.timer__milliseconds')
-const timerSeconds = document.querySelector('.timer__seconds')
-const timerMinutes = document.querySelector('.timer__minutes')
-const startButton = document.querySelector('stopwatch__start')
-const stopButton = document.querySelector('stopwatch__stop')
-const resetButton = document.querySelector('stopwatch__reset')
+
+
 
 function startTimer(){
     startButton.disabled = true;
@@ -100,12 +104,17 @@ function startTimer(){
     resetButton.disabled = false;
 
     startTime = Date.now();
-    cancelId = requestAnimationFrame(updateTimer)
+
+    cancelId = setInterval(updateTimer, 1000 / 60)
 }
 
 function stopTimer(){
+    startButton.disabled = false;
+    stopButton.disabled = true;
+    resetButton.disabled = false;
+
     savedTime += Date.now() - startTime + savedTime;
-    cancelAnimationFrame(cancelId)
+    clearInterval(cancelId)
     console.log(savedTime)
 }
 
@@ -126,7 +135,7 @@ function updateTimer(){
 
     if (millisLeft < 0) {
         millisLeft = 0
-        cancelAnimationFrame(cancelId)
+        clearInterval(cancelId)
         cancelId = null
     }
     let secondsLeft = millisLeft / 1000
@@ -150,7 +159,7 @@ function updateTimer(){
     timerSeconds.innerHTML = secondsText;
     timerMinutes.innerHTML = minutesText;
 
-    if (cancelId){
-    cancelId = requestAnimationFrame(updateTimer)
-    }
+    // if (cancelId){
+    // cancelId = requestAnimationFrame(updateTimer)
+    // }
 }
